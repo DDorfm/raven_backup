@@ -108,11 +108,11 @@ No se almacenan credenciales en texto plano.
 
 ## ⚖️ Licencia
 
-Este proyecto está bajo la licencia **GNU General Public License v3.0**.
+Raven Backup se proporciona **SIN GARANTÍA ALGUNA**. Es software libre, y puedes redistribuirlo bajo los términos de la Licencia Pública General de GNU.  
+Libre para usar, modificar y distribuir — siempre que cualquier versión derivada 
+también sea libre.
 
-> Libre para usar, modificar y distribuir — siempre que cualquier versión derivada también sea libre.
-
-🔗 [Texto completo de la licencia](https://www.gnu.org/licenses/gpl-3.0.html)
+Derechos y obligaciones según la [**GNU GPL v3.0**](LICENSE).
 
 ---
 
