@@ -104,9 +104,13 @@ No credentials are stored in plain text.
 ---
 
 ## ⚖️ License
-Rights and obligations under **GNU GPL v3.0**.
 
-Free to use, modify, and distribute — as long as any derivative version is also free.
+Raven backup comes with **ABSOLUTELY NO WARRANTY**. This is free software, and you
+are  welcome to redistribute it under the terms of the GNU General Public License.
+Free to use, modify, and distribute — as long as any derivative version is also
+free.
+
+Rights and obligations under [**GNU GPL v3.0**](LICENSE).
 
 
 ---
