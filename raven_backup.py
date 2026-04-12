@@ -111,6 +111,10 @@ class RavenBackup:
             with open(fichero_de_clave, "wb") as f:
                 f.write(key)
                 result = subprocess.run(['chmod', '600', '.secret.key'], capture_output=True, text=True, shell=False)
+                if result.returncode != 0:
+                    messagebox.showinfo(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
+                                        message=self._('Error creando fichero .secret.key'))
+
         else:
             with open(fichero_de_clave, "rb") as f:
                 key = f.read()
@@ -140,7 +144,7 @@ class RavenBackup:
                     quit()
                 except FileNotFoundError:
                     messagebox.showinfo(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
-                        message=self._(f"pybabel no encontrado. Instale Babel: pip install babel"))
+                        message=self._("pybabel no encontrado. Instale Babel: pip install babel"))
                     quit()
             else:
                 pass
@@ -188,7 +192,7 @@ class RavenBackup:
 
     def lanzar_hilo_copia(self):
 
-        if self.hilo_copia == None or not self.hilo_copia.is_alive():
+        if self.hilo_copia is None or not self.hilo_copia.is_alive():
             self.hilo_copia = threading.Thread(target=self.procesa_datos_origen, args=(False,))
             self.hilo_copia.start()
         elif self.hilo_copia.is_alive():
@@ -377,7 +381,7 @@ class RavenBackup:
         selec_idioma_ventana.wm_geometry(tamano_ventana)
         selec_idioma_ventana.resizable(False, False)
         selec_idioma_ventana.title(self.nombre_aplicacion + ' ' + 'v.' + self.version)
-        lbl = Label(selec_idioma_ventana, text=self._('Select language'), font=("TkDefaultFont", 12)).place(x=35, y=30)
+        Label(selec_idioma_ventana, text=self._('Select language'), font=("TkDefaultFont", 12)).place(x=35, y=30)
         combo = ttk.Combobox(selec_idioma_ventana, state="readonly",
                              values=["Spanish|es", "English|en"], width=10)
         combo.place(x=200, y=30)
@@ -504,7 +508,7 @@ class RavenBackup:
                 if password_encriptada:
                     try:
                         self.password = self.cipher.decrypt(password_encriptada.encode()).decode()
-                    except:
+                    except Exception:
                         self.password = password_encriptada  # Por si falla, usa el valor tal cual
                 else:
                     self.password = ''
@@ -963,7 +967,8 @@ class RavenBackup:
             defaultextension='.conf',
             confirmoverwrite=True)
 
-        if file == None: return
+        if file is None:
+            return None
         fichero_configuracion = open(file.name.split("/")[-1], 'w')
         for f in range(len(directorios_seleccionados_tupla)):
             fichero_configuracion.write(directorios_seleccionados_tupla[f])
@@ -1072,13 +1077,13 @@ class RavenBackup:
         for item_ in directorios_seleccionados_tupla:
             item_ = item_.strip()
             if not os.path.exists(item_):
-                if not self.cron_ventana == None and self.cron_ventana.winfo_exists()==1:
+                if self.cron_ventana is not None and self.cron_ventana.winfo_exists()==1:
                     self.cron_ventana.wm_attributes('-topmost', False)
                 messagebox.showinfo(title=self._('Confirmación'),
                                     message=self._('El item de origen ')
                                     + item_ + self._(' no existe\n')
                                     + self._('Se eliminará de la lista'))
-                if not self.cron_ventana == None and self.cron_ventana.winfo_exists()==1:
+                if self.cron_ventana is not None and self.cron_ventana.winfo_exists()==1:
                     self.cron_ventana.wm_attributes('-topmost', True)
 
                 indice_item = self.directorios_seleccionados_lstbox.get(0, 'end').index(item_)
@@ -1110,7 +1115,7 @@ class RavenBackup:
                                     message=self._('El directorio ya existe en la selección'))
                 break
 
-        if not len(directorio_origen) == 0 and directorio_en_listbox_bool == False:
+        if not len(directorio_origen) == 0 and not directorio_en_listbox_bool:
             self.directorios_seleccionados_lstbox.insert('end', directorio_origen)
             self.modificacion_de_items = True
 
@@ -1127,7 +1132,8 @@ class RavenBackup:
                                     message=self._('El fichero ya existe en la selección'))
             break
 
-        if not len(fichero_origen) == 0 and fichero_en_listbox_bool == False:
+        if not len(fichero_origen) == 0 and not fichero_en_listbox_bool:
+            print("Inserting file...")
             self.directorios_seleccionados_lstbox.insert('end', fichero_origen)
             self.modificacion_de_items = True
 
@@ -1144,7 +1150,7 @@ class RavenBackup:
 
     def elimina_items_seleccionados(self):
 
-        if not self.item_seleccionado is None:
+        if self.item_seleccionado is not None:
             for i in self.directorios_seleccionados_lstbox.curselection():
                 self.items_eliminados_lst.append(self.directorios_seleccionados_lstbox.get(i))
             self.directorios_seleccionados_lstbox.delete(self.item_seleccionado[0])
@@ -1156,7 +1162,7 @@ class RavenBackup:
 
     def comprueba_cambios_y_salir(self):
 
-        if not self.hilo_copia == None:
+        if self.hilo_copia is not None:
             if self.hilo_copia.is_alive():
                 messagebox.showinfo(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
                                     message=self._('Se está ejecutando un proceso de copia.\n'
