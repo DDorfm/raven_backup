@@ -29,8 +29,8 @@ msgstr ""
 msgid "No existe el directorio de claves ssh"
 msgstr "The SSH key directory doesn't exist"
 
-msgid "No se guardará contraseña para opción de accceso con clave pública"
-msgstr "No password will be saved for the public key authentication option"
+msgid "Clave pública: no se guarda contraseña"
+msgstr "Public key: no password will be saved"
 
 msgid "Ejecutando "
 msgstr "Running "
@@ -65,6 +65,9 @@ msgstr "You must set a remote port value for remote target"
 msgid "Error en el proceso"
 msgstr "Error while in process"
 
+msgid "Error verificando enlaces simbólicos en destino"
+msgstr "Error while checking target symbolic links"
+
 msgid "Error en el proceso Abandonando la copia"
 msgstr "Error while in process. Quitting"
 
@@ -87,7 +90,7 @@ msgid "No hay ficheros y/o directorios seleccionados para copiar"
 msgstr "There are not selected files and/or directories to copy"
 
 msgid "No hay directorio de destino"
-msgstr "There is not targer directory"
+msgstr "There is not target directory"
 
 msgid "La selección ha sido guardada"
 msgstr "Selection saved"
@@ -118,9 +121,6 @@ msgstr "There are not selected items to delete"
 
 msgid "¿Guardar los cambios antes de salir?"
 msgstr "Save changes before exit?"
-
-msgid "Se han realizado modificaciones\n"
-msgstr "Changes has been done\n"
 
 msgid "¿Desea salir de Raven Backup?"
 msgstr "Exit Raven Backup?"
@@ -198,10 +198,10 @@ msgstr ""
 "\n"
 
 msgid ""
-"Raven Backup es un script en python 3.10 y Tkinter para guardar\n"
+"Raven Backup es un script en python 3.12.3 y Tkinter para guardar\n"
 " y restaurar directorios y ficheros usando rsync."
 msgstr ""
-"Raven Backup is a python 3.10 and Tkinter script to save\n"
+"Raven Backup is a python 3.12.3 and Tkinter script to save\n"
 " and restore directories and files using rsync."
 
 msgid "El fichero ya existe en la selección"
@@ -249,9 +249,7 @@ msgstr "Accept values for cron"
 msgid "Programador"
 msgstr "Schedule"
 
-msgid ""
-"Seleccione sólo un tipo de parámetro \n"
-" temporal"
+msgid "Seleccione sólo un tipo de parámetro temporal"
 msgstr "Select just one type (@ or Min, hour...)"
 
 msgid "Minuto"
@@ -303,8 +301,8 @@ msgstr "Settings changes will not be saved for local process"
 msgid "Puede editar los desplegables manualmente"
 msgstr "You can edit boxes by hand"
 
-msgid "Ya existe en cron el elemento: "
-msgstr "Item already in cron file: "
+msgid "Ya existe en cron el elemento:"
+msgstr "Item already in cron file:"
 
 msgid ""
 "\n"
