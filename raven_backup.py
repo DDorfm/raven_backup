@@ -61,7 +61,7 @@ class RavenBackup:
         self.alto_ventana = None
         self.medida_alto_ajustada = None
         self.texto_etiqueta_mensaje_de_estado = None
-        self.texto_etiqueta_mensaje_de_estado_cron = None
+        self.txt_lbl_stat_crom = None
         self.opcion_delete_var = None
         self.opcion_comprimir_var = None
         self.opcion_incremental_var = None
@@ -193,14 +193,14 @@ class RavenBackup:
         self.root.iconphoto(
             True,
             PhotoImage(file="assets/raven_backup.png")
-        )  
+                            )  
         self.root.title(f"{self.titulo_app}"
                         f"{15 * ' '}{self._('Configuración actual: ')}"
-                        f" {self.chequea_fichero_conf_actual().upper()}"
-        )
+                        f"{self.chequea_fichero_conf_actual().upper()}"
+                        )
 
         self.texto_etiqueta_mensaje_de_estado = StringVar()
-        self.texto_etiqueta_mensaje_de_estado_cron = StringVar()
+        self.txt_lbl_stat_crom = StringVar()
         self.opcion_delete_var = StringVar()
         self.opcion_comprimir_var = StringVar()
         self.opcion_incremental_var = StringVar()
@@ -276,7 +276,7 @@ class RavenBackup:
 
         self.idioma_seleccionado = idioma
         messagebox.showinfo(
-            title=f"{self.nombre_aplicacion} v. {self.version}",
+            title=f"{self.titulo_app}",
             message=self._('Necesita guardar y reiniciar')
         )
         self.modificacion_de_items = True
@@ -311,7 +311,7 @@ class RavenBackup:
 
     def recoge_valores_cron(self):
 
-        self.texto_etiqueta_mensaje_de_estado_cron.set('')
+        self.txt_lbl_stat_crom.set('')
         self.comandos_para_cron_lst.clear()
         if not self.cron_arroba_var.get() == '' and \
                 (not self.cron_minuto_var.get() == ''
@@ -366,7 +366,7 @@ class RavenBackup:
             )
             self.cron_ventana.wm_attributes('-topmost', True)
             return None
-        self.texto_etiqueta_mensaje_de_estado_cron.set(
+        self.txt_lbl_stat_crom.set(
             self._('Construyendo instrucciones para cron...')
         )
         self.procesa_datos_origen(True)
@@ -396,7 +396,7 @@ class RavenBackup:
             if err_decode == '':
                 err = False
             else:
-                self.texto_etiqueta_mensaje_de_estado_cron.set(err_decode)
+                self.txt_lbl_stat_crom.set(err_decode)
                 err = True
             chequea_resultado = result.stdout.read().decode().strip()
             chequea_resultado_lst = chequea_resultado.split('\n')
@@ -406,7 +406,7 @@ class RavenBackup:
                 if elemento_lista_chequeo == item_cron.replace('"', ""):
                     item_origen = item_cron.split(" ")
                     signos_temporales = item_cron.split('rsync')[0]
-                    self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                    self.txt_lbl_stat_crom.set('')
                     self.cron_ventana.wm_attributes('-topmost', False)
                     messagebox.showinfo(
                         title=f"{self.titulo_app}",
@@ -425,7 +425,7 @@ class RavenBackup:
                     if err_decode == '':
                         err = False
                     else:
-                        self.texto_etiqueta_mensaje_de_estado_cron.set(
+                        self.txt_lbl_stat_crom.set(
                             err_decode)
                         err = True
 
@@ -435,7 +435,7 @@ class RavenBackup:
 
         if not err and order_sent:
             msg_err = self._('órdenes enviadas a cron correctamente')
-            self.texto_etiqueta_mensaje_de_estado_cron.set(msg_err)
+            self.txt_lbl_stat_crom.set(msg_err)
 
     def selec_idioma_para_config(self, ancho=350, alto=140):
 
@@ -621,9 +621,9 @@ class RavenBackup:
 
         mensaje_de_estado_lbl_cron = Label(
             self.cron_ventana,
-            textvariable=self.texto_etiqueta_mensaje_de_estado_cron,
+            textvariable=self.txt_lbl_stat_crom,
             font=(font.Font(None, size=11, weight="bold")))
-        self.texto_etiqueta_mensaje_de_estado_cron.set('')
+        self.txt_lbl_stat_crom.set('')
         if self.idioma_seleccionado == 'es':
             x_pos = 185
         else:
@@ -770,7 +770,7 @@ class RavenBackup:
 
             if dry:
                 self.cron_ventana.wm_attributes('-topmost', True)
-                self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                self.txt_lbl_stat_crom.set('')
             return None
 
         if self.directorio_destino_txtbox.get('1.0', 'end').strip() == '':
@@ -782,7 +782,7 @@ class RavenBackup:
                 message=self._('No hay directorio de destino'))
             if dry:
                 self.cron_ventana.wm_attributes('-topmost', True)
-                self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                self.txt_lbl_stat_crom.set('')
             return None
 
         self.comprueba_existencia_en_origen()
@@ -824,7 +824,7 @@ class RavenBackup:
 
                 if dry:
                     self.cron_ventana.wm_attributes('-topmost', True)
-                    self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                    self.txt_lbl_stat_crom.set('')
 
                 return None
             if (self.tipo_acceso_var.get() == 'password'
@@ -844,7 +844,7 @@ class RavenBackup:
                     message=self._('No existe directorio de destino'))
                 if dry:
                     self.cron_ventana.wm_attributes('-topmost', True)
-                    self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                    self.txt_lbl_stat_crom.set('')
                 return None
 
         if not dry:
@@ -864,7 +864,9 @@ class RavenBackup:
 
             if directorio_destino.find(':') == -1:
                 if os.path.isdir(item_a_copiar):
+
                     directorio_destino_ruta_completa = ''
+
 
                     item_a_copiar += '/'
                     item_a_copiar_cadena_final = item_a_copiar.split('/')[-2]
@@ -911,18 +913,18 @@ class RavenBackup:
                                     '-topmost',
                                     False
                                 )
-
-                                messagebox.showerror(title=
-                                    f"{self.nombre_aplicacion} "
-                                          f"v. {self.version}",
-                                    message= self._('Error verificando '
-                                           'enlaces simbólicos en destino'))
-
+                                tmp_msg = (
+                                    'Error verificando '
+                                    'enlaces simbólicos en destino')
+                                messagebox.showerror(
+                                    title=f"{self.titulo_app}",
+                                    message=self._(tmp_msg)
+                                )
                                 self.cron_ventana.wm_attributes(
                                     '-topmost',
                                     True
                                 )
-                                self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                                self.txt_lbl_stat_crom.set('')
 
                         else:
                             self.log_txtbox.insert(tkinter.INSERT, '\n')
@@ -955,11 +957,13 @@ class RavenBackup:
                                     item_a_copiar_cadena_final
                             )
 
-                            if not os.path.isdir(directorio_destino_ruta_completa):
+                            if not os.path.isdir(
+                                    directorio_destino_ruta_completa
+                            ):
                                 result = subprocess.run(
                                     [
                                         'mkdir -p ' +
-                                     directorio_destino_ruta_completa
+                                        directorio_destino_ruta_completa
                                     ],
                                     text=True,
                                     capture_output=True,
@@ -967,231 +971,415 @@ class RavenBackup:
                                 )
                                 if not result.stderr == '':
                                     if dry:
-                                        self.cron_ventana.wm_attributes('-topmost', False)
-                                    messagebox.showerror(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
-                                                         message=self._('Error creando directorio destino'))
+                                        self.cron_ventana.wm_attributes(
+                                            '-topmost',
+                                            False
+                                        )
+                                    messagebox.showerror(
+                                        title=self.titulo_app,
+                                        message=self._('Error creando'
+                                                       ' directorio destino')
+                                    )
 
                                     if dry:
-                                        self.cron_ventana.wm_attributes('-topmost', True)
-                                        self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                                        self.cron_ventana.wm_attributes(
+                                            '-topmost',
+                                            True
+                                        )
+                                        self.txt_lbl_stat_crom.set('')
 
 
-                            crea_enlace_simbolico_cmd = ['ln -s ' + ruta_directorio_origen + ' ' + ruta_fichero_simbolico_a_chequear ]
+                            crea_enlace_simbolico_cmd = [
+                                'ln -s ' + ruta_directorio_origen +
+                                ' ' +
+                                ruta_fichero_simbolico_a_chequear
+                            ]
 
-                            result = subprocess.run(crea_enlace_simbolico_cmd, capture_output=True, text=True, shell=True)
+                            result = subprocess.run(
+                                crea_enlace_simbolico_cmd,
+                                capture_output=True,
+                                text=True, shell=True
+                            )
                             if not result.stderr == '':
                                 if dry:
-                                    self.cron_ventana.wm_attributes('-topmost', False)
-                                messagebox.showerror(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
-                                                     message=self._('Error creando enlace al directorio de destino'))
+                                    self.cron_ventana.wm_attributes(
+                                        '-topmost',
+                                        False
+                                    )
+                                tmp_msg = ('Error creando '
+                                           'enlace al directorio de destino')
+                                messagebox.showerror(
+                                    title=self.titulo_app,
+                                    message=self._(tmp_msg)
+                                )
                                 if dry:
-                                    self.cron_ventana.wm_attributes('-topmost', True)
-                                    self.texto_etiqueta_mensaje_de_estado_cron.set('')
-
-
+                                    self.cron_ventana.wm_attributes(
+                                        '-topmost',
+                                        True
+                                    )
+                                    self.txt_lbl_stat_crom.set('')
                             else:
                                 self.log_txtbox.insert(tkinter.INSERT, '\n')
-                                self.log_txtbox.insert(tkinter.INSERT, self._('Creando enlace ') + item_a_copiar
-                                                       + ' ---> ' + ruta_fichero_simbolico_a_chequear + '\n')
+                                self.log_txtbox.insert(
+                                    tkinter.INSERT,
+                                    self._('Creando enlace ') +
+                                    item_a_copiar +
+                                    ' ---> ' +
+                                    ruta_fichero_simbolico_a_chequear +
+                                    '\n'
+                                )
                                 self.log_txtbox.insert(tkinter.INSERT, '\n')
                                 self.log_txtbox.update()
 
-                        comando_lst = ['rsync', '-avP', '--link-dest=' +
-                                       ruta_fichero_simbolico_a_chequear,
-                                       item_a_copiar, directorio_destino_ruta_completa]
-
+                        comando_lst = [
+                            'rsync', '-avP', '--link-dest=' +
+                            ruta_fichero_simbolico_a_chequear,
+                            item_a_copiar,
+                            directorio_destino_ruta_completa
+                        ]
                     else:
-                        comando_lst = ['rsync', '-avP', item_a_copiar, directorio_destino_ruta_completa]
-
+                        comando_lst = [
+                            'rsync', '-avP', item_a_copiar,
+                            directorio_destino_ruta_completa
+                        ]
                 else:
                     directorio_destino_ruta_completa = directorio_destino
-                    comando_lst = ['rsync', '-avP', item_a_copiar, directorio_destino_ruta_completa]
+                    comando_lst = [
+                        'rsync', '-avP', item_a_copiar,
+                        directorio_destino_ruta_completa
+                    ]
 
             else:
                 if self.tipo_acceso_var.get() == 'password':
-
                     passw = self.password_var.get()
-                    pto_remoto = self.puerto_remoto_txtbox.get('1.0', 'end').strip()
+                    pto_remoto = (
+                        self.puerto_remoto_txtbox.get('1.0', 'end').strip()
+                    )
 
                     if os.path.isdir(item_a_copiar):
 
                         directorio_destino_ruta_completa = ''
                         item_a_copiar += '/'
-                        item_a_copiar_cadena_final = item_a_copiar.split('/')[-2]
-                        directorio_destino_ruta_completa = directorio_destino + '/' + item_a_copiar_cadena_final + '/'
+                        item_a_copiar_cadena_final = (
+                            item_a_copiar.split('/'))[-2]
+                        directorio_destino_ruta_completa = (
+                                directorio_destino + '/' +
+                                item_a_copiar_cadena_final + '/'
+                        )
 
-                        buffer_enlace = directorio_destino_ruta_completa.split(":")[-1]
+                        buffer_enlace = (
+                            directorio_destino_ruta_completa.split(":"))[-1]
 
-                        enlace_a_chequear = "~/" + buffer_enlace[:len(buffer_enlace) - 1] + "_latest"
-
-                        usuario_ip = directorio_destino_ruta_completa.split(":")[0]
+                        enlace_a_chequear = (
+                                "~/" +
+                                buffer_enlace[:len(buffer_enlace) - 1] +
+                                "_latest"
+                        )
+                        usuario_ip = (
+                            directorio_destino_ruta_completa.split(":"))[0]
                         fichero_simbolico = enlace_a_chequear.split("/")[-1]
-                        if self.opcion_incremental_var.get()=='True':
+                        if self.opcion_incremental_var.get() == 'True':
 
                             self.log_txtbox.insert(tkinter.INSERT, '\n')
-                            self.log_txtbox.insert(tkinter.INSERT, self._('Chequeando enlace remoto ') + enlace_a_chequear
-                                                   + ' ---> ' + directorio_destino_ruta_completa + '\n')
+                            self.log_txtbox.insert(
+                                tkinter.INSERT,
+                                self._('Chequeando enlace remoto ') +
+                                enlace_a_chequear +
+                                ' ---> ' +
+                                directorio_destino_ruta_completa +
+                                '\n'
+                            )
                             self.log_txtbox.insert(tkinter.INSERT, '\n')
                             self.log_txtbox.update()
 
-                            chequea_enlace_simbolico_cmd = ['sshpass', '-p',  passw, 'ssh', '-p', pto_remoto, usuario_ip,
-                                                            "if [ -L " + enlace_a_chequear + " ]; then  echo Existe  enlace " + fichero_simbolico + " ; fi"]
-
-                            result = subprocess.run(chequea_enlace_simbolico_cmd, capture_output=True, text=True)
-
+                            chequea_enlace_simbolico_cmd = [
+                                'sshpass', '-p',  passw,
+                                'ssh', '-p', pto_remoto, usuario_ip,
+                                "if [ -L " + enlace_a_chequear + " ]; "
+                                "then  echo Existe  enlace " +
+                                fichero_simbolico + " ; fi"]
+                            result = subprocess.run(
+                                chequea_enlace_simbolico_cmd,
+                                capture_output=True,
+                                text=True
+                            )
                             if not result.stderr == '':
-
                                 if dry:
-                                    self.cron_ventana.wm_attributes('-topmost', False)
-
-                                messagebox.showerror(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
-                                                     message=self._('Error verificando enlaces simbólicos en el servidor'))
+                                    self.cron_ventana.wm_attributes(
+                                        '-topmost',
+                                        False
+                                    )
+                                tmp_msg = ('Error verificando enlaces'
+                                           ' simbólicos en el servidor')
+                                messagebox.showerror(
+                                    title=self.titulo_app,
+                                    message=self._(tmp_msg))
                                 if dry:
-                                    self.cron_ventana.wm_attributes('-topmost', True)
-                                    self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                                    self.cron_ventana.wm_attributes(
+                                        '-topmost',
+                                        True)
+                                    self.txt_lbl_stat_crom.set('')
 
                             if "Existe enlace" in result.stdout:
                                 self.log_txtbox.insert(tkinter.INSERT, '\n')
-                                self.log_txtbox.insert(tkinter.INSERT, self._('Existe enlace remoto ') + enlace_a_chequear
-                                                       + ' ---> ' + directorio_destino_ruta_completa + '\n')
+                                self.log_txtbox.insert(
+                                    tkinter.INSERT,
+                                    self._('Existe enlace remoto ') +
+                                    enlace_a_chequear +
+                                    ' ---> ' +
+                                    directorio_destino_ruta_completa +
+                                    '\n'
+                                )
                                 self.log_txtbox.insert(tkinter.INSERT, '\n')
                                 self.log_txtbox.update()
                             else:
                                 enlace_a_crear = enlace_a_chequear
 
                                 self.log_txtbox.insert(tkinter.INSERT, '\n')
-                                self.log_txtbox.insert(tkinter.INSERT, self._('Creando enlace remoto ') + enlace_a_chequear
-                                                       + ' ---> ' + directorio_destino_ruta_completa + '\n')
+                                self.log_txtbox.insert(
+                                    tkinter.INSERT,
+                                    self._('Creando enlace remoto ') +
+                                    enlace_a_chequear +
+                                    ' ---> ' +
+                                    directorio_destino_ruta_completa +
+                                    '\n'
+                                )
                                 self.log_txtbox.insert(tkinter.INSERT, '\n')
                                 self.log_txtbox.update()
 
-                                origen_enlace_simbolico = enlace_a_chequear.replace('_latest', '/')
-                                crea_enlace_simbolico_cmd = ['sshpass','-p', passw, 'ssh', '-p', pto_remoto, usuario_ip,
-                                                             'ln -s ' + origen_enlace_simbolico, enlace_a_crear]
+                                origen_enlace_simbolico = (
+                                    enlace_a_chequear.replace('_latest', '/')
+                                )
+                                crea_enlace_simbolico_cmd = [
+                                    'sshpass', '-p', passw,
+                                    'ssh', '-p', pto_remoto,
+                                    usuario_ip, 'ln -s ' +
+                                    origen_enlace_simbolico,
+                                    enlace_a_crear
+                                ]
 
-                                result = subprocess.run(crea_enlace_simbolico_cmd, capture_output=True, text=True)
+                                result = subprocess.run(
+                                    crea_enlace_simbolico_cmd,
+                                    capture_output=True,
+                                    text=True
+                                )
                                 if not result.stderr == '':
                                     if dry:
-                                        self.cron_ventana.wm_attributes('-topmost', False)
-
-                                    messagebox.showerror(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
-                                                         message=self._('Error creando enlaces simbólicos en el servidor'))
+                                        self.cron_ventana.wm_attributes(
+                                            '-topmost',
+                                            False
+                                        )
+                                    tmp_msg = ('Error creando enlaces '
+                                               'simbólicos en el servidor')
+                                    messagebox.showerror(
+                                        title=self.titulo_app,
+                                        message=self._(tmp_msg))
                                     if dry:
-                                        self.cron_ventana.wm_attributes('-topmost', True)
-                                        self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                                        self.cron_ventana.wm_attributes(
+                                            '-topmost',
+                                            True
+                                        )
+                                        self.txt_lbl_stat_crom.set('')
 
-                            comando_lst = ['rsync', '-avP', '-e', 'sshpass -p ' + passw + ' ssh -p ' + pto_remoto, '--link-dest=' +
-                                           enlace_a_chequear,
-                                           item_a_copiar, directorio_destino_ruta_completa]
+                            comando_lst = [
+                                'rsync', '-avP', '-e',
+                                'sshpass -p ' + passw +
+                                ' ssh -p ' + pto_remoto,
+                                '--link-dest=' + enlace_a_chequear,
+                                item_a_copiar,
+                                directorio_destino_ruta_completa
+                            ]
                         else:
-                            comando_lst = ['rsync', '-avP', '-e', 'sshpass -p ' + passw + ' ssh -p ' + pto_remoto,
-                                           item_a_copiar,
-                                           directorio_destino_ruta_completa]
+                            comando_lst = [
+                                'rsync', '-avP', '-e',
+                                'sshpass -p ' + passw +
+                                ' ssh -p ' + pto_remoto,
+                                item_a_copiar,
+                                directorio_destino_ruta_completa
+                                        ]
                     else:
                         directorio_destino_ruta_completa = directorio_destino
-
-                        comando_lst = ['rsync', '-avP', '-e', 'sshpass -p ' + passw + ' ssh -p ' + pto_remoto, item_a_copiar,
-                                       directorio_destino_ruta_completa]
+                        comando_lst = ['rsync', '-avP', '-e',
+                                       'sshpass -p ' + passw +
+                                       ' ssh -p ' + pto_remoto, item_a_copiar,
+                                       directorio_destino_ruta_completa
+                        ]
 
                 else:
-                    pto_remoto = self.puerto_remoto_txtbox.get('1.0', 'end').strip()
+                    pto_remoto = (
+                        self.puerto_remoto_txtbox.get('1.0', 'end').strip()
+                    )
 
                     if os.path.isdir(item_a_copiar):
                         directorio_destino_ruta_completa = ''
                         item_a_copiar += '/'
-                        item_a_copiar_cadena_final = item_a_copiar.split('/')[-2]
-                        directorio_destino_ruta_completa = directorio_destino + '/' + item_a_copiar_cadena_final + '/'
-                        buffer_enlace = directorio_destino_ruta_completa.split(":")[-1]
-                        enlace_a_chequear = "~/" + buffer_enlace[:len(buffer_enlace) - 1] + "_latest"
+                        item_a_copiar_cadena_final = (
+                            item_a_copiar.split('/'))[-2]
+                        directorio_destino_ruta_completa = (
+                                directorio_destino + '/'
+                                + item_a_copiar_cadena_final + '/'
+                        )
+                        buffer_enlace = (
+                            directorio_destino_ruta_completa.split(":"))[-1]
+                        enlace_a_chequear = (
+                                "~/" +
+                                buffer_enlace[:len(buffer_enlace) - 1] +
+                                "_latest"
+                        )
 
                         fichero_simbolico = enlace_a_chequear.split("/")[-1]
                         if self.opcion_incremental_var.get() == 'True':
 
                             self.log_txtbox.insert(tkinter.INSERT, '\n')
-                            self.log_txtbox.insert(tkinter.INSERT, self._('Chequeando enlace remoto ') + enlace_a_chequear
-                                                   + ' ---> ' + directorio_destino_ruta_completa + '\n')
+                            self.log_txtbox.insert(
+                                tkinter.INSERT,
+                                self._('Chequeando enlace remoto ') +
+                                enlace_a_chequear +
+                                ' ---> ' +
+                                directorio_destino_ruta_completa +
+                                '\n'
+                            )
                             self.log_txtbox.insert(tkinter.INSERT, '\n')
                             self.log_txtbox.update()
 
-                            usuario_ip = directorio_destino_ruta_completa.split(":")[0]
-                            chequea_enlace_simbolico_cmd = ['ssh', '-p', pto_remoto, usuario_ip,
-                                                            "if [ -L " + enlace_a_chequear + " ]; then  echo Existe  enlace " + fichero_simbolico + " ; fi"]
+                            usuario_ip = (
+                                directorio_destino_ruta_completa.split(":"))[0]
+                            chequea_enlace_simbolico_cmd = [
+                                'ssh', '-p', pto_remoto,
+                                usuario_ip,
+                                "if [ -L " + enlace_a_chequear + " ]; "
+                                        "then  echo Existe  enlace " +
+                                        fichero_simbolico + " ; fi"]
 
-                            result = subprocess.run(chequea_enlace_simbolico_cmd, capture_output=True, text=True)
+                            result = subprocess.run(
+                                chequea_enlace_simbolico_cmd,
+                                capture_output=True,
+                                text=True)
 
                             if not result.stderr == '':
                                 if dry:
-                                    self.cron_ventana.wm_attributes('-topmost', False)
-                                messagebox.showerror(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
-                                                     message=self._('Error verificando enlaces simbólicos en el servidor'))
+                                    self.cron_ventana.wm_attributes(
+                                        '-topmost',
+                                        False
+                                    )
+                                tmp_msg = ('Error verificando enlaces'
+                                           ' simbólicos en destino')
+                                messagebox.showerror(
+                                    title=self.titulo_app,
+                                    message=self._(tmp_msg)
+                                )
                                 if dry:
-                                    self.cron_ventana.wm_attributes('-topmost', True)
-                                    self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                                    self.cron_ventana.wm_attributes(
+                                        '-topmost',
+                                        True
+                                    )
+                                    self.txt_lbl_stat_crom.set('')
 
                             if "Existe enlace" in result.stdout:
                                 self.log_txtbox.insert(tkinter.INSERT, '\n')
-                                self.log_txtbox.insert(tkinter.INSERT, self._('Existe enlace remoto ') + enlace_a_chequear
-                                                       + ' ---> ' + directorio_destino_ruta_completa
-                                                       + ':' + enlace_a_chequear + '\n')
+                                self.log_txtbox.insert(
+                                    tkinter.INSERT,
+                                    self._('Existe enlace remoto ') +
+                                    enlace_a_chequear +
+                                    ' ---> ' +
+                                    directorio_destino_ruta_completa +
+                                    ':' +
+                                    enlace_a_chequear +
+                                    '\n')
                                 self.log_txtbox.insert(tkinter.INSERT, '\n')
                                 self.log_txtbox.update()
                             else:
 
                                 enlace_a_crear = enlace_a_chequear
-                                origen_enlace_simbolico = enlace_a_chequear.replace('_latest', '/')
+                                origen_enlace_simbolico = (
+                                    enlace_a_chequear.replace('_latest', '/')
+                                )
 
                                 self.log_txtbox.insert(tkinter.INSERT, '\n')
-                                self.log_txtbox.insert(tkinter.INSERT, self._('Creando enlace remoto ') + enlace_a_crear
-                                                       + ' ---> ' + directorio_destino_ruta_completa + '\n')
+                                self.log_txtbox.insert(
+                                    tkinter.INSERT,
+                                    self._('Creando enlace remoto ') +
+                                    enlace_a_crear +
+                                    ' ---> ' +
+                                    directorio_destino_ruta_completa +
+                                    '\n'
+                                )
                                 self.log_txtbox.insert(tkinter.INSERT, '\n')
                                 self.log_txtbox.update()
 
-                                crea_enlace_simbolico_cmd = ['ssh', '-p', pto_remoto, usuario_ip, 'ln -s ' + origen_enlace_simbolico, enlace_a_crear]
-                                result = subprocess.run(crea_enlace_simbolico_cmd, capture_output=True, text=True)
+                                crea_enlace_simbolico_cmd = [
+                                    'ssh', '-p', pto_remoto, usuario_ip,
+                                    'ln -s ' + origen_enlace_simbolico,
+                                    enlace_a_crear
+                                ]
+                                result = subprocess.run(
+                                    crea_enlace_simbolico_cmd,
+                                    capture_output=True,
+                                    text=True
+                                )
 
                                 if not result.stderr == '':
                                     if dry:
-                                        self.cron_ventana.wm_attributes('-topmost', False)
-                                    messagebox.showerror(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
-                                                         message=self._('Error creando enlaces simbólicos en el servidor'))
+                                        self.cron_ventana.wm_attributes(
+                                            '-topmost',
+                                            False
+                                        )
+                                    msg_tmp = ('Error creando enlaces'
+                                               ' simbólicos en el servidor')
+                                    messagebox.showerror(
+                                        title=self.titulo_app,
+                                        message=self._(msg_tmp))
                                     if dry:
-                                        self.cron_ventana.wm_attributes('-topmost', True)
-                                        self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                                        self.cron_ventana.wm_attributes(
+                                            '-topmost',
+                                            True
+                                        )
+                                        self.txt_lbl_stat_crom.set('')
 
-                            comando_lst = ['rsync', '-avP', '-e', ' ssh -p ' + pto_remoto, '--link-dest=' +
-                                           enlace_a_chequear,
-                                           item_a_copiar, directorio_destino_ruta_completa]
-
+                            comando_lst = [
+                                'rsync', '-avP', '-e',
+                                ' ssh -p ' + pto_remoto,
+                                '--link-dest=' +  enlace_a_chequear,
+                                item_a_copiar,
+                                directorio_destino_ruta_completa
+                            ]
                         else:
-                            comando_lst = ['rsync', '-avP', '-e', ' ssh -p ' + pto_remoto,
-                                           item_a_copiar,
-                                           directorio_destino_ruta_completa]
+                            comando_lst = [
+                                'rsync', '-avP', '-e',
+                                ' ssh -p ' + pto_remoto,
+                                item_a_copiar,
+                                directorio_destino_ruta_completa
+                            ]
                     else:
                         directorio_destino_ruta_completa = directorio_destino
-                        comando_lst = ['rsync', '-avP', '-e', ' ssh -p ' + pto_remoto,
-                                       item_a_copiar,
-                                       directorio_destino_ruta_completa]
+                        comando_lst = ['rsync', '-avP',
+                                       '-e', ' ssh -p ' +
+                                       pto_remoto, item_a_copiar,
+                                       directorio_destino_ruta_completa
+                        ]
 
             indice_lista = 1
             if self.opcion_delete_var.get() == 'True':
                 indice_lista += 1
-                tmp = comando_lst[:]  
+                tmp = comando_lst[:]
                 tmp.insert(indice_lista, '--delete')
                 comando_lst = tmp.copy()
 
             if self.opcion_comprimir_var.get() == 'True':
-                tmp = comando_lst[:]  
-                tmp[1] = tmp[1] + 'z'  
+                tmp = comando_lst[:]
+                tmp[1] = tmp[1] + 'z'
                 comando_lst = tmp.copy()
 
-            if self.opcion_enlaces_simbolicos_var.get() == 'mantener_enlaces_simbolicos':
-                tmp = comando_lst[:]  
+            if (self.opcion_enlaces_simbolicos_var.get() ==
+                    'mantener_enlaces_simbolicos'):
+                tmp = comando_lst[:]
                 tmp.insert(3, '--links')
                 comando_lst = tmp.copy()
 
-            if self.opcion_enlaces_simbolicos_var.get() == 'copiar_archivos_enlazados':
+            if (self.opcion_enlaces_simbolicos_var.get() ==
+                    'copiar_archivos_enlazados'):
                 indice_lista += 1
-                tmp = comando_lst[:]  
+                tmp = comando_lst[:]
                 tmp.insert(indice_lista, '--copy-links')
                 comando_lst = tmp.copy()
 
@@ -1206,71 +1394,100 @@ class RavenBackup:
             if not len(self.log_txtbox.get('1.0', tkinter.END)) > 0:
                 self.log_txtbox.insert(tkinter.INSERT, '\n')
 
-            self.texto_etiqueta_mensaje_de_estado.set(self._("Ejecutando la copia de ") + item_a_copiar)
+            self.texto_etiqueta_mensaje_de_estado.set(
+                self._("Ejecutando la copia de ") +
+                item_a_copiar
+            )
 
             self.log_txtbox.insert(tkinter.INSERT, '\n')
 
             if not self.password == '' and self.password in comando_lst_str:
-                comando_lst_str=comando_lst_str.replace(self.password, '*********')
+                comando_lst_str=comando_lst_str.replace(
+                    self.password, '*********'
+                )
 
-            self.log_txtbox.insert(tkinter.INSERT, self._("Ejecutando ") + comando_lst_str)
+            self.log_txtbox.insert(
+                tkinter.INSERT,
+                self._("Ejecutando ") + comando_lst_str
+            )
 
             self.log_txtbox.insert(tkinter.INSERT, '\n')
             self.log_txtbox.update()
 
-            result = subprocess.run(comando_lst, capture_output=True, text=True)
-
+            result = subprocess.run(
+                comando_lst,
+                capture_output=True,
+                text=True
+            )
             if result.stderr != '':
-                self.log_txtbox.insert(tkinter.INSERT, '\n' + 37*'*' + ' ERROR ' + 38*'*')
+                self.log_txtbox.insert(
+                    tkinter.INSERT,
+                    '\n' + 37 * '*' +
+                    ' ERROR ' + 38 * '*'
+                )
                 self.log_txtbox.insert(tkinter.INSERT, result.stderr)
                 self.log_txtbox.update()
 
                 if 'Connection refused' in result.stderr:
-                    self.texto_etiqueta_mensaje_de_estado.set(self._('Conexión rehusada'))
+                    self.texto_etiqueta_mensaje_de_estado.set(
+                        self._('Conexión rehusada')
+                    )
                     if dry:
                         self.cron_ventana.wm_attributes('-topmost', False)
-                    messagebox.showerror(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
-                                         message=self._('Conexión rehusada Abandonando la copia'))
+                    tmp_msg = 'Conexión rehusada Abandonando la copia'
+                    messagebox.showerror(
+                        title=self.titulo_app,
+                        message=self._(tmp_msg))
                     if dry:
                         self.cron_ventana.wm_attributes('-topmost', True)
-                        self.texto_etiqueta_mensaje_de_estado_cron.set('')
-
+                        self.txt_lbl_stat_crom.set('')
                     return None
+
                 if 'No route to host' in result.stderr:
-
-                    self.texto_etiqueta_mensaje_de_estado.set(self._('No hay acceso al host'))
-
+                    self.texto_etiqueta_mensaje_de_estado.set(
+                        self._('No hay acceso al host')
+                    )
                     if dry:
                         self.cron_ventana.wm_attributes('-topmost', False)
-                    messagebox.showerror(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
-                                         message=self._('No hay acceso al host Abandonando la copia'))
+                    tmp_msg = 'No hay acceso al host Abandonando la copia'
+                    messagebox.showerror(
+                        title=self.titulo_app,
+                        message=self._(tmp_msg)
+                    )
                     if dry:
                         self.cron_ventana.wm_attributes('-topmost', True)
-                        self.texto_etiqueta_mensaje_de_estado_cron.set('')
-
-
+                        self.txt_lbl_stat_crom.set('')
                     return None
 
                 if 'Permission denied' in result.stderr:
-                    self.texto_etiqueta_mensaje_de_estado.set(self._('Permiso denegado'))
+                    self.texto_etiqueta_mensaje_de_estado.set(
+                        self._('Permiso denegado')
+                    )
                     if dry:
                         self.cron_ventana.wm_attributes('-topmost', False)
-                    messagebox.showerror(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
-                                         message=self._('Permiso denegado Abandonando la copia'))
-
+                    tmp_msg = 'Permiso denegado Abandonando la copia'
+                    messagebox.showerror(
+                        title=self.titulo_app,
+                        message=self._(tmp_msg))
                     if dry:
                         self.cron_ventana.wm_attributes('-topmost', True)
-                        self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                        self.txt_lbl_stat_crom.set('')
 
                     return None
 
                 if 'Connection reset' in result.stderr:
-                    self.texto_etiqueta_mensaje_de_estado.set(self._('Reset en la conexión'))
-                    messagebox.showerror(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
-                                         message=self._('Reset en la conexión Abandonando la copia'))
+                    self.texto_etiqueta_mensaje_de_estado.set(
+                        self._('Reset en la conexión')
+                    )
+                    messagebox.showerror(
+                        title=self.titulo_app,
+                        message=self._('Reset en la conexión '
+                                       'Abandonando la copia'))
                     return None
 
-                self.texto_etiqueta_mensaje_de_estado.set(self._('Error en el proceso'))
+                self.texto_etiqueta_mensaje_de_estado.set(
+                    self._('Error en el proceso')
+                )
                 if dry:
                     self.cron_ventana.wm_attributes('-topmost', False)
                 messagebox.showerror(
@@ -1279,38 +1496,58 @@ class RavenBackup:
                                    ' Abandonando la copia'))
                 if dry:
                     self.cron_ventana.wm_attributes('-topmost', True)
-                    self.texto_etiqueta_mensaje_de_estado_cron.set('')
+                    self.txt_lbl_stat_crom.set('')
                 return None
             else:
                 self.log_txtbox.insert(tkinter.INSERT, '\n')
-                self.log_txtbox.insert(tkinter.INSERT, self._('Sincronizando ')
-                                       + ' ' + item_a_copiar + ' --> '
-                                       + directorio_destino + '\n')
+                self.log_txtbox.insert(
+                    tkinter.INSERT,
+                    self._('Sincronizando ') +
+                    ' ' +
+                    item_a_copiar +
+                    ' --> ' +
+                    directorio_destino +
+                    '\n'
+                )
                 self.log_txtbox.insert(tkinter.INSERT, result.stdout)
                 self.log_txtbox.insert(tkinter.INSERT, '\n')
                 self.log_txtbox.insert(tkinter.INSERT, 111*'-')
                 self.log_txtbox.update()
 
                 fichero_log = open("raven_backup.log", "a")
-                cadena_a_escribir = (item_a_copiar + " --> " + directorio_destino
-                                      +
-                                     " date-time: " + datetime.datetime.now().strftime(
-                            "%d/%m/%Y %H:%M:%S") + " Ok!")
+                cadena_a_escribir = (
+                        item_a_copiar +
+                        " --> " +
+                        directorio_destino +
+                        " date-time: " +
+                        datetime.datetime.now().strftime(
+                            "%d/%m/%Y %H:%M:%S"
+                        ) +
+                        " Ok!"
+                )
+
                 fichero_log.write(cadena_a_escribir)
                 fichero_log.write('\n')
                 fichero_log.write(70 * '=')
                 fichero_log.write(2 * '\n')
                 fichero_log.close()
-            self.directorios_seleccionados_lstbox.itemconfig(indice-1, bg="white")
 
-        if dry:
+            self.directorios_seleccionados_lstbox.itemconfig(
+                indice-1,
+                bg="white"
+            )
+
+        if dry:  
             return self.comandos_para_cron_lst
         else:
-            self.texto_etiqueta_mensaje_de_estado.set(self._('Copia finalizada'))
+            self.texto_etiqueta_mensaje_de_estado.set(
+                self._('Copia finalizada')
+            )
 
     def guarda_lista_items_seleccionados(self):
 
-        if not self.directorio_destino_txtbox.get('1.0', 'end').strip().find(':') == -1:
+        tmp_var = self.directorio_destino_txtbox.get('1.0', 'end')
+        if not (tmp_var.strip().find(':') == -1):
             if self.puerto_remoto_txtbox.get('1.0', 'end').strip() == '':
                 messagebox.showinfo(
                     title=f"{self.titulo_app}",
@@ -1318,25 +1555,32 @@ class RavenBackup:
                                    ' para un destino remoto'))
                 return None
 
-            if self.tipo_acceso_var.get() == 'password' and self.password_var.get() == '':
-                messagebox.showinfo(title=self.nombre_aplicacion + ' ' + 'v.' + self.version,
-                                    message=self._('Debe asignar un valor de password para acceso con password'))
+            if (self.tipo_acceso_var.get() == 'password' and
+                    self.password_var.get() == ''):
+
+                messagebox.showinfo(
+                    title=self.titulo_app,
+                    message=self._('Debe asignar un valor de '
+                                   'password para acceso con password'))
+
                 return None
 
 
         opcion_delete_cambio = (
-                self.opcion_delete_inicial_str != self.opcion_delete_var.get()
+                self.opcion_delete_inicial_str !=
+                self.opcion_delete_var.get()
         )
         opcion_comprimir_cambio = (
-                self.opcion_comprimir_inicial_str != self.opcion_comprimir_var.get()
+                self.opcion_comprimir_inicial_str !=
+                self.opcion_comprimir_var.get()
         )
         opcion_enlaces_cambio = (
-                self.opcion_enlaces_simbolicos_inicial_str
-                != self.opcion_enlaces_simbolicos_var.get()
+                self.opcion_enlaces_simbolicos_inicial_str !=
+                self.opcion_enlaces_simbolicos_var.get()
         )
         opcion_incremental_cambio = (
-                self.opcion_incremental_inicial_str
-                != self.opcion_incremental_var.get()
+                self.opcion_incremental_inicial_str !=
+                self.opcion_incremental_var.get()
         )
         hay_cambios = (
                 self.modificacion_de_items
@@ -1345,7 +1589,6 @@ class RavenBackup:
                 or opcion_enlaces_cambio
                 or opcion_incremental_cambio
         )
-
         if not hay_cambios:
             self.texto_etiqueta_mensaje_de_estado.set(
                 self._('No hay cambios que guardar')
@@ -1401,7 +1644,9 @@ class RavenBackup:
             password = self.password_entrybox.get().strip()
             tipo_acceso = self.tipo_acceso_var.get()
             if password:
-                password_encriptada = self.cipher.encrypt(password.encode()).decode()
+                password_encriptada = (
+                    self.cipher.encrypt(password.encode()).decode()
+                )
             else:
                 password_encriptada = ''
 
@@ -1457,25 +1702,29 @@ class RavenBackup:
             fichero_configuracion.write(self.idioma_defecto)
 
         fichero_configuracion.close()
-        self.texto_etiqueta_mensaje_de_estado.set(self._('La selección ha sido guardada'))
+        self.texto_etiqueta_mensaje_de_estado.set(
+            self._('La selección ha sido guardada')
+        )
         self.cuenta_atras(0)
 
         self.modificacion_de_items = False
         self.opcion_comprimir_inicial_str = self.opcion_comprimir_var.get()
         self.opcion_delete_inicial_str = self.opcion_delete_var.get()
 
-        self.opcion_enlaces_simbolicos_inicial_str = \
+        self.opcion_enlaces_simbolicos_inicial_str = (
             self.opcion_enlaces_simbolicos_var.get()
+        )
 
-        self.opcion_incremental_inicial_str = \
+        self.opcion_incremental_inicial_str = (
             self.opcion_incremental_var.get()
+        )
 
-        self.directorio_destino_inicial_str = \
+        self.directorio_destino_inicial_str = (
             self.directorio_destino_txtbox.get('1.0', 'end').strip()
-
-        self.puerto_remoto_inicial_str = \
+        )
+        self.puerto_remoto_inicial_str = (
             self.puerto_remoto_txtbox.get('1.0', 'end').strip()
-
+        )
         self.password_var_inicial_str = self.password_var.get()
         self.tipo_acceso_var_inicial_str = self.tipo_acceso_var.get()
 
@@ -1483,10 +1732,11 @@ class RavenBackup:
 
     def cambiar_configuracion(self):
 
-        fichero_temporal = \
+        fichero_temporal = (
             (filedialog.askopenfilename(
                 filetypes=[("Configuration files", "*.conf")],
                 title=self._("Seleccione un fichero de configuración")))
+        )
         if len(fichero_temporal) == 0:
             return
         fichero_temporal = fichero_temporal.split("/")[-1]
@@ -1500,8 +1750,9 @@ class RavenBackup:
         respuesta = askyesno(
             title=self._('Confirmación'),
             message=self._('¿Confirma que los parámetros del fichero ') +
-                    fichero_temporal +
-                    self._(' sean aplicados como actuales?'))
+                            fichero_temporal +
+                            self._(' sean aplicados como actuales?')
+        )
         if respuesta:
             shutil.copy(fichero_temporal, '.raven_backup.conf')
             self.texto_etiqueta_mensaje_de_estado.set(
@@ -2172,6 +2423,7 @@ class RavenBackup:
         self.directorios_seleccionados_lstbox.delete(0, tkinter.END)
         self.destino = ''
         self.directorio_destino_txtbox.delete("1.0", tkinter.END)
+
 
 def main():
 
